@@ -2,12 +2,12 @@ name: Test BSI Package Compatibility
 
 on:
   push:
-    branches: [ main, next, develop ]
+    branches: [ main, next ]
     paths:
       - '**'
       - '.github/workflows/test-bsi-package.yml'
   pull_request:
-    branches: [ main, next, develop ]
+    branches: [ main, next ]
 
 jobs:
   test:
@@ -15,8 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [ '8.1' ]
-        laravel-version: [ '^9.0' ]
+        php-version: [ '8.2', '8.3', '8.4' ]
+        laravel-version: [ '^10.0', '^11.0' ]
 
     name: PHP ${{ matrix.php-version }} - Laravel ${{ matrix.laravel-version }}
 
