@@ -43,9 +43,11 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install dependencies for Laravel ${{ matrix.laravel-version }}
-        run: |
-          composer require --dev -W "illuminate/support:${{ matrix.laravel-version }}" "illuminate/http:${{ matrix.laravel-version }}"
-          composer update --no-interaction
+        env:
+          COMPOSER_PROCESS_TIMEOUT: 0
+          COMPOSER_NO_INTERACTION: 1
+          COMPOSER_NO_AUDIT: 1
+        run: composer update --no-interaction
 
       - name: Run tests
         run: composer test
