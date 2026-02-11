@@ -2,12 +2,12 @@ name: Test BSI Package Compatibility
 
 on:
   push:
-    branches: [ main, next, develop ]
+    branches: [ 1.x, develop ]
     paths:
       - '**'
       - '.github/workflows/test-bsi-package.yml'
   pull_request:
-    branches: [ main, next, develop ]
+    branches: [ 1.x, develop ]
 
 jobs:
   test:
