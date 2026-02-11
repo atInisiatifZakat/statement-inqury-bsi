@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Inisiatif\Bsi;
 
-final readonly class Statement
+final class Statement
 {
     public function __construct(
         public readonly Money $balance,

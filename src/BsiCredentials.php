@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Inisiatif\Bsi;
 
-final readonly class BsiCredentials
+final class BsiCredentials
 {
     public function __construct(
-        public string $apiKey,
-        public string $custId,
-        public string $userId,
-        public string $password,
-        public string $sandboxUrl,
-        public string $productionUrl,
-        public string $channelId = 'API',
-        public bool $isDevelopment = true
+        public readonly string $apiKey,
+        public readonly string $custId,
+        public readonly string $userId,
+        public readonly string $password,
+        public readonly string $sandboxUrl,
+        public readonly string $productionUrl,
+        public readonly string $channelId = 'API',
+        public readonly bool $isDevelopment = true
     ) {}
 }
