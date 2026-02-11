@@ -22,8 +22,19 @@ Add your BSI API configuration to `config/services.php`:
     'sandbox_url' => env('BSI_SANDBOX_URL'),
     'production_url' => env('BSI_PRODUCTION_URL'),
     'channel_id' => env('BSI_CHANNEL_ID', 'API'),
+    'verify_ssl' => env('BSI_VERIFY_SSL', true), // Use false for self-signed certificates
 ],
 ```
+
+### SSL Certificate Configuration
+
+For development environments with self-signed certificates, you can disable SSL verification by setting `BSI_VERIFY_SSL=false` in your `.env` file:
+
+```env
+BSI_VERIFY_SSL=false
+```
+
+> **⚠️ Warning**: Only disable SSL verification in development environments. Always use proper SSL certificates in production.
 
 ## Usage
 

@@ -16,7 +16,8 @@ final class BsiClientFactory
             sandboxUrl: (string) ($config['sandbox_url'] ?? ''),
             productionUrl: (string) ($config['production_url'] ?? ''),
             channelId: (string) ($config['channel_id'] ?? 'API'),
-            isDevelopment: ($config['env'] ?? 'production') !== 'production'
+            isDevelopment: ($config['env'] ?? 'production') !== 'production',
+            verifySsl: ($config['verify_ssl'] ?? true) == true
         );
 
         return new BsiClient($credentials);

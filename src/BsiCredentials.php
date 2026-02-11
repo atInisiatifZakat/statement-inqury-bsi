@@ -14,6 +14,7 @@ final class BsiCredentials
         public readonly string $sandboxUrl,
         public readonly string $productionUrl,
         public readonly string $channelId = 'API',
-        public readonly bool $isDevelopment = true
+        public readonly bool $isDevelopment = true,
+        public readonly bool $verifySsl = true,
     ) {}
 }
