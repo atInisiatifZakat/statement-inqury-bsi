@@ -153,6 +153,23 @@ final class BsiClient implements LoggerAwareInterface
                 $data[$key] = '***';
             } elseif (is_array($value)) {
                 $data[$key] = $this->maskSensitiveData($value);
+            } elseif (is_string($value) && str_contains($value, '=')) {
+                // Mask URL-encoded strings that might contain sensitive parameters
+                $parts = explode('&', $value);
+                $maskedParts = [];
+                foreach ($parts as $part) {
+                    if (str_contains($part, '=')) {
+                        [$paramKey, $paramValue] = explode('=', $part, 2);
+                        if (in_array($paramKey, $sensitiveKeys, true)) {
+                            $maskedParts[] = $paramKey . '=***';
+                        } else {
+                            $maskedParts[] = $part;
+                        }
+                    } else {
+                        $maskedParts[] = $part;
+                    }
+                }
+                $data[$key] = implode('&', $maskedParts);
             }
         }
 
