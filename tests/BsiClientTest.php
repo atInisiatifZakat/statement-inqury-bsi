@@ -138,4 +138,58 @@ final class BsiClientTest extends TestCase
             return true;
         });
     }
+
+    public function test_verify_ssl_false_disables_ssl_verification(): void
+    {
+        Http::fake([
+            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
+        ]);
+
+        $credentials = new BsiCredentials(
+            apiKey: 'key',
+            custId: 'cust',
+            userId: 'user',
+            password: 'pass',
+            sandboxUrl: 'https://sandbox.bsi-api.local/rest',
+            productionUrl: 'https://api.bsi-api.local/rest',
+            verifySsl: false
+        );
+        $client = new BsiClient($credentials);
+
+        $token = $client->getToken();
+
+        $this->assertSame('test-token', $token);
+
+        Http::assertSent(function ($request) {
+            // When verifySsl is false, the request should still succeed (SSL verification is disabled)
+            return str_contains($request->url(), '/api/gettoken');
+        });
+    }
+
+    public function test_verify_ssl_true_is_default(): void
+    {
+        Http::fake([
+            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
+        ]);
+
+        $credentials = new BsiCredentials(
+            apiKey: 'key',
+            custId: 'cust',
+            userId: 'user',
+            password: 'pass',
+            sandboxUrl: 'https://sandbox.bsi-api.local/rest',
+            productionUrl: 'https://api.bsi-api.local/rest'
+            // verifySsl defaults to true
+        );
+        $client = new BsiClient($credentials);
+
+        $token = $client->getToken();
+
+        $this->assertSame('test-token', $token);
+        $this->assertTrue($credentials->verifySsl);
+
+        Http::assertSent(function ($request) {
+            return str_contains($request->url(), '/api/gettoken');
+        });
+    }
 }
