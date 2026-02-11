@@ -1,0 +1,43 @@
+{
+    "name": "inisiatif/statement-inquiry-bsi",
+    "description": "Bank BSI integration package for statement inquiry",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Inisiatif Zakat Indonesia",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "psr/log": "^2.0|^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "mockery/mockery": "^1.0",
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+        "illuminate/http": "^9.0|^10.0|^11.0|^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Inisiatif\\Bsi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Inisiatif\\Bsi\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Inisiatif\\Bsi\\Providers\\BsiServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

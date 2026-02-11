@@ -1,0 +1,58 @@
+name: Test BSI Package Compatibility
+
+on:
+  push:
+    branches: [ main, next, develop ]
+    paths:
+      - '**'
+      - '.github/workflows/test-bsi-package.yml'
+  pull_request:
+    branches: [ main, next, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [ '8.1', '8.2', '8.3', '8.4' ]
+        laravel-version: [ '^9.0', '^10.0', '^11.0', '^12.0' ]
+        exclude:
+          # PHP 8.1 is minimum, exclude unsupported combinations if needed
+          - php-version: '8.1'
+            laravel-version: '^12.0'
+
+    name: PHP ${{ matrix.php-version }} - Laravel ${{ matrix.laravel-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: openssl, mbstring, json
+          tools: composer:v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies for Laravel ${{ matrix.laravel-version }}
+        run: |
+          composer require -W --no-update "illuminate/support:${{ matrix.laravel-version }}" "illuminate/http:${{ matrix.laravel-version }}" "orchestra/testbench:*"
+          composer update --no-interaction
+
+      - name: Run tests
+        run: composer test
+
+      - name: Run PHPUnit tests with coverage
+        run: vendor/bin/phpunit --coverage-text
