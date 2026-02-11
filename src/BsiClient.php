@@ -167,7 +167,7 @@ final class BsiClient implements LoggerAwareInterface
 
         // Disable SSL verification for self-signed certificates if needed
         if (! $this->credentials->verifySsl) {
-            $client = $client->withoutVerifying();
+            $client = $client->withOptions(['verify' => false]);
         }
 
         return $client;
