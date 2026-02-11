@@ -33,7 +33,8 @@ final class BsiClient implements LoggerAwareInterface
 
         $this->loggerRequest('Get Token', $params);
 
-        $response = $this->getHttpClient()->withQueryParameters($params)->post('/api/gettoken');
+        $queryString = http_build_query($params);
+        $response = $this->getHttpClient()->post('/api/gettoken?' . $queryString);
 
         $this->loggerResponse('Get Token', $response);
 
@@ -83,10 +84,10 @@ final class BsiClient implements LoggerAwareInterface
 
         $this->loggerRequest('Account Statement Single', $params, $headers);
 
+        $queryString = http_build_query($params);
         $response = $this->getHttpClient()
             ->withHeaders($headers)
-            ->withQueryParameters($params)
-            ->post('/api/accountstatement/single');
+            ->post('/api/accountstatement/single?' . $queryString);
 
         $this->loggerResponse('Account Statement Single', $response);
 
@@ -114,10 +115,10 @@ final class BsiClient implements LoggerAwareInterface
 
         $this->loggerRequest('Information Balance', $params, $headers);
 
+        $queryString = http_build_query($params);
         $response = $this->getHttpClient()
             ->withHeaders($headers)
-            ->withQueryParameters($params)
-            ->post('/api/informationbalance');
+            ->post('/api/informationbalance?' . $queryString);
 
         $this->loggerResponse('Information Balance', $response);
 
