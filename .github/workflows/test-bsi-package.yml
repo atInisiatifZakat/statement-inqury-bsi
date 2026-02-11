@@ -44,7 +44,7 @@ jobs:
 
       - name: Install dependencies for Laravel ${{ matrix.laravel-version }}
         run: |
-          composer require -W --no-update "illuminate/support:${{ matrix.laravel-version }}" "illuminate/http:${{ matrix.laravel-version }}" "orchestra/testbench:*"
+          composer require --dev -W --no-update "illuminate/support:${{ matrix.laravel-version }}" "illuminate/http:${{ matrix.laravel-version }}" "orchestra/testbench:^8.0"
           composer update --no-interaction
 
       - name: Run tests
