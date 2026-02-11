@@ -10,17 +10,6 @@
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
-        <source>
-            <include>
-                <directory suffix=".php">src</directory>
-            </include>
-            <exclude>
-                <directory suffix="Provider.php">src</directory>
-            </exclude>
-        </source>
-    </coverage>
-
     <php>
         <env name="APP_ENV" value="testing"/>
     </php>

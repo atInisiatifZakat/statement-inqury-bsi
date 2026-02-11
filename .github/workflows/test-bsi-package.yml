@@ -51,6 +51,3 @@ jobs:
 
       - name: Run tests
         run: composer test
-
-      - name: Run PHPUnit tests with coverage
-        run: vendor/bin/phpunit --coverage-text
