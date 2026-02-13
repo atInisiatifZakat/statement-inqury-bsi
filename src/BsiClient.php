@@ -180,7 +180,10 @@ final class BsiClient implements LoggerAwareInterface
     {
         $baseUrl = $this->credentials->isDevelopment ? $this->credentials->sandboxUrl : $this->credentials->productionUrl;
 
-        $client = Http::baseUrl($baseUrl)->asJson()->acceptJson();
+        $client = Http::baseUrl($baseUrl)
+            ->withHeaders(['User-Agent' => 'ncmsruntime'])
+            ->asJson()
+            ->acceptJson();
 
         // Disable SSL verification for self-signed certificates if needed
         if (! $this->credentials->verifySsl) {
