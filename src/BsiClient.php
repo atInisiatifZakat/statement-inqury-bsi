@@ -38,7 +38,7 @@ final class BsiClient implements LoggerAwareInterface
 
         $this->loggerResponse('Get Token', $response);
 
-        return (string) $response->json('token');
+        return (string) $response->json('data.token');
     }
 
     public function generateSignature(array $params): string
