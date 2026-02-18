@@ -43,18 +43,17 @@ final class BsiClient implements LoggerAwareInterface
 
     public function generateSignature(array $params): string
     {
-        $filteredParams = array_filter($params, function ($value) {
-            return ! is_null($value) && $value !== '' && ! is_array($value) && ! is_object($value);
-        });
+        $credentialsParams = [
+            'api_key' => $this->credentials->apiKey,
+            'user_id' => $this->credentials->userId,
+            'cust_id' => $this->credentials->custId,
+        ];
 
-        ksort($filteredParams);
+        $this->loggerRequest('Generate Signature RSA', $credentialsParams);
 
-        $data = urldecode(http_build_query($filteredParams));
-
-        $this->loggerRequest('Generate Signature RSA', ['data' => $data]);
-
+        $queryString = http_build_query($credentialsParams);
         $response = $this->getHttpClient()
-            ->post('/api/generate/signature/rsa', ['data' => $data]);
+            ->post('/api/generate/signature/rsa?' . $queryString);
 
         $this->loggerResponse('Generate Signature RSA', $response);
 
