@@ -149,7 +149,10 @@ final class BsiClient implements LoggerAwareInterface
 
         foreach ($data as $key => $value) {
             if (in_array($key, $sensitiveKeys, true)) {
-                $data[$key] = '***';
+                // Only mask if value is not empty string
+                if ($value !== '') {
+                    $data[$key] = '***';
+                }
             } elseif (is_array($value)) {
                 $data[$key] = $this->maskSensitiveData($value);
             } elseif (is_string($value) && str_contains($value, '=')) {
@@ -160,7 +163,8 @@ final class BsiClient implements LoggerAwareInterface
                     if (str_contains($part, '=')) {
                         [$paramKey, $paramValue] = explode('=', $part, 2);
                         if (in_array($paramKey, $sensitiveKeys, true)) {
-                            $maskedParts[] = $paramKey . '=***';
+                            // Only mask if paramValue is not empty string
+                            $maskedParts[] = $paramValue !== '' ? $paramKey . '=***' : $paramKey . '=';
                         } else {
                             $maskedParts[] = $part;
                         }
