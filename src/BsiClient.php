@@ -90,7 +90,26 @@ final class BsiClient implements LoggerAwareInterface
 
         $this->loggerResponse('Account Statement Single', $response);
 
-        return collect($response->json('data.record') ?? []);
+        return collect($response->json('data.record') ?? [])
+            ->map(fn (array $record) => $this->mapToStatement($record));
+    }
+
+    private function mapToStatement(array $record): Statement
+    {
+        return new Statement(
+            balance: new Money(
+                value: $record['balance'] ?? 0,
+                currency: $record['ccy'] ?? 'IDR',
+            ),
+            amount: new Money(
+                value: $record['amount'] ?? 0,
+                currency: $record['ccy'] ?? 'IDR',
+            ),
+            transactionId: (string) ($record['ft_number'] ?? ''),
+            type: (string) ($record['dbcr'] ?? ''),
+            remark: (string) ($record['description'] ?? ''),
+            transactionDate: $record['date'] ?? null,
+        );
     }
 
     public function getInformationBalance(string $accountNumber): array
