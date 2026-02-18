@@ -57,7 +57,7 @@ final class BsiClient implements LoggerAwareInterface
 
         $this->loggerResponse('Generate Signature RSA', $response);
 
-        return (string) $response->json('signature');
+        return (string) $response->json('data.signature');
     }
 
     public function getAccountStatement(string $accountNumber, DateTimeInterface $from, DateTimeInterface $to): Collection
