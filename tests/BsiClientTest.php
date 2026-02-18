@@ -14,7 +14,7 @@ final class BsiClientTest extends TestCase
     public function test_can_get_token(): void
     {
         Http::fake([
-            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
+            '*/api/gettoken*' => Http::response(['data' => ['token' => 'test-token']]),
         ]);
 
         $sandboxUrl = 'https://sandbox.bsi-api.local/rest';
@@ -42,7 +42,7 @@ final class BsiClientTest extends TestCase
     public function test_can_generate_signature(): void
     {
         Http::fake([
-            '*/api/generate/signature/rsa*' => Http::response(['signature' => 'test-signature-value']),
+            '*/api/generate/signature/rsa*' => Http::response(['data' => ['signature' => 'test-signature-value']]),
         ]);
 
         $credentials = new BsiCredentials(
@@ -69,12 +69,20 @@ final class BsiClientTest extends TestCase
     public function test_can_get_account_statement(): void
     {
         Http::fake([
-            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
-            '*/api/generate/signature/rsa*' => Http::response(['signature' => 'test-signature']),
+            '*/api/gettoken*' => Http::response(['data' => ['token' => 'test-token']]),
+            '*/api/generate/signature/rsa*' => Http::response(['data' => ['signature' => 'test-signature']]),
             '*/api/accountstatement/single*' => Http::response([
                 'data' => [
                     'record' => [
-                        ['ft_number' => 'FT123', 'amount' => '1,000.00', 'balance' => '5,000.00', 'dbcr' => 'CR'],
+                        [
+                            'ft_number' => 'FT123',
+                            'amount' => '1,000.00',
+                            'balance' => '5,000.00',
+                            'dbcr' => 'CR',
+                            'ccy' => 'IDR',
+                            'description' => 'Test transaction',
+                            'date' => '31 Jan 2026 05:18',
+                        ],
                     ],
                 ],
             ]),
@@ -93,7 +101,12 @@ final class BsiClientTest extends TestCase
         $statements = $client->getAccountStatement('123456', now(), now());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('FT123', $statements->first()['ft_number']);
+        $statement = $statements->first();
+        $this->assertSame('FT123', $statement->transactionId);
+        $this->assertSame('CR', $statement->type);
+        $this->assertSame('Test transaction', $statement->remark);
+        $this->assertSame('5,000.00', $statement->balance->value);
+        $this->assertSame('1,000.00', $statement->amount->value);
 
         Http::assertSent(function ($request) {
             if (str_contains($request->url(), '/api/accountstatement/single')) {
@@ -109,8 +122,8 @@ final class BsiClientTest extends TestCase
     public function test_can_get_information_balance(): void
     {
         Http::fake([
-            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
-            '*/api/generate/signature/rsa*' => Http::response(['signature' => 'test-signature']),
+            '*/api/gettoken*' => Http::response(['data' => ['token' => 'test-token']]),
+            '*/api/generate/signature/rsa*' => Http::response(['data' => ['signature' => 'test-signature']]),
             '*/api/informationbalance*' => Http::response(['data' => ['balance' => 1000]]),
         ]);
 
@@ -142,7 +155,7 @@ final class BsiClientTest extends TestCase
     public function test_verify_ssl_false_disables_ssl_verification(): void
     {
         Http::fake([
-            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
+            '*/api/gettoken*' => Http::response(['data' => ['token' => 'test-token']]),
         ]);
 
         $credentials = new BsiCredentials(
@@ -169,7 +182,7 @@ final class BsiClientTest extends TestCase
     public function test_verify_ssl_true_is_default(): void
     {
         Http::fake([
-            '*/api/gettoken*' => Http::response(['token' => 'test-token']),
+            '*/api/gettoken*' => Http::response(['data' => ['token' => 'test-token']]),
         ]);
 
         $credentials = new BsiCredentials(
